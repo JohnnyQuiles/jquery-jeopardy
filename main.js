@@ -1,30 +1,41 @@
 //BIG FUNCTION FOR COLUMN && ROWS 
-const main = async () => {
-    
+async function main() {
+
+    //HOLD JEOPARDY DATA
+    let jeopardyData = undefined;
+
     //GET JEOPARDY DATA 
-    const rawJeopardyData = await fetch('jeopardy.json'); 
-    const jeopardyData = await rawJeopardyData.json(); 
-    console.log('What is Jeopardy:', jeopardyData);
-
-    //GROUP THE DATA
-    const groupedData = _.groupBy(jeopardyData, 'showNumber');
-    console.log(groupedData);
-
-    //WHEN MONEY IS CLICKED ASK QUESTION 
-    const gridItem = document.querySelector('.grid-container'); 
-    
-    gridItem.addEventListener('click', (event) => { 
-    const gridItem = event.target; 
-    console.log('$', gridItem); 
-
-    let gridItems = [];
-    for(const gridQuestion of jeopardyData) {
-        console.log('Question Asks:', gridQuestion.question);
-        gridItems.push(gridQuestion); 
-    
+    async function getJeopardyData() {
+        if (jeopardyData === undefined) {
+            const rawJeopardyData = await fetch('jeopardy.json');
+            jeopardyData = await rawJeopardyData.json();
+            console.log('What is Jeopardy:', jeopardyData);
+        }
+        return jeopardyData;
     }
+    getJeopardyData();
+
+    //WHEN DOLLAR AMOUNT IS CLICKED ASK QUESTION 
+    const gridItem = document.querySelector('.grid-container');
+
+    gridItem.addEventListener('click', function (event) {
+        const gridItem = event.target;
+        console.log(gridItem);
+
+        //GET A RANDOM QUESTION FOR $100
+        async function getRandomQuestion() {
+            const data = await getJeopardyData();
+            const dollarAmount = _.filter(data, {value: '$100'});
+            const randomQuestion = _.sample(dollarAmount);
+            console.log('Random Question:', randomQuestion.question);
+            console.log('Question Value:', randomQuestion.value);
+            
+            return randomQuestion;
+        }
+        getRandomQuestion();
+
     
     })
-    
-}; 
+
+}
 main();
