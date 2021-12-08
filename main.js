@@ -29,7 +29,16 @@ async function main() {
             const randomQuestion = _.sample(dollarAmount);
             console.log('Random Question:', randomQuestion.question);
             console.log('Question Value:', randomQuestion.value);
+
+            //DISPLAY ON PAGE   
+            const question = document.querySelector('#question');
             
+            const child = document.createElement('p');
+            child.className = 'child';
+            child.innerHTML = '<p>' + ' Question: ' + randomQuestion.question + '</p>';
+            question.appendChild(child);
+
+
             return randomQuestion;
         }
         getRandomQuestion();
